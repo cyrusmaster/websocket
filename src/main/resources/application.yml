@@ -1,0 +1,33 @@
+server:
+  port: 28122
+  tomcat:
+    uri-encoding: UTF-8
+  max-http-header-size: 102400
+  # 请求前缀
+  servlet:
+    context-path: /ynkf-websocket
+    encoding:
+      force: true
+      charset: UTF-8
+      enabled: true
+
+spring:
+  application:
+    name: ynkf-websocket
+#  datasource:
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: jdbc:mysql://172.16.1.246:3306/db_center_form?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&allowMultiQueries=true
+#    username: root
+#    password: hz310012
+  mvc:
+    dispatch-options-request: true
+
+#mybatis:
+#  mapper-locations: /mapper/*.xml
+
+logging:
+  level:
+    com.hzsun.zbp.ownexactlydata.dao: debug
+#  file: logs/data-assests.log
+
+
