@@ -14,13 +14,13 @@ server:
 spring:
   application:
     name: ynkf-websocket
-#  datasource:
-#    driver-class-name: com.mysql.cj.jdbc.Driver
-#    url: jdbc:mysql://172.16.1.246:3306/db_center_form?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&allowMultiQueries=true
-#    username: root
-#    password: hz310012
-  mvc:
-    dispatch-options-request: true
+  kafka:
+    bootstrap-servers:
+      hadoop23:9092 
+      hadoop24:9092
+      hadoop25:9092
+    consumer:
+      group-id: springboot-websocket
 
 #mybatis:
 #  mapper-locations: /mapper/*.xml

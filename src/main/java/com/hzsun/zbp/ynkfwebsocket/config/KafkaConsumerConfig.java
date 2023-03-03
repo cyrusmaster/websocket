@@ -15,21 +15,22 @@ import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * @description: 消费者配置
- * @author: anpeiyong
- * @date: Created in 2019/12/12 15:06
- * @since:
- */
+
+ /**
+  * REMARK   消息过滤器  
+  * @className   KafkaConsumerConfig
+  * @date  2023/3/2 15:43
+  * @author  cyf  
+  */
 @Order(2)
-@Configuration
-@EnableKafka
+//@Configuration
+//@EnableKafka
 public class KafkaConsumerConfig {
 
     @Bean
     public ConcurrentKafkaListenerContainerFactory kafkaListenerContainerFactory() {
         ConcurrentKafkaListenerContainerFactory factory = new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(consumerFactory());
+        //factory.setConsumerFactory(consumerFactory());
         return factory;
     }
 
