@@ -2,19 +2,16 @@ package com.hzsun.zbp.ynkfwebsocket.controller;
 
 import com.hzsun.zbp.ynkfwebsocket.constant.WebSocketConstants;
 import lombok.Data;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RestController;
-
 import javax.websocket.*;
-import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import java.util.concurrent.CopyOnWriteArraySet;
 
-@ServerEndpoint("/totalConsume/{name}")
+@ServerEndpoint("/totalConsume/1")
 @RestController
 @Data
-
+@Slf4j
 public class TotalConsumeWebSocket {
 
     /**
@@ -25,7 +22,7 @@ public class TotalConsumeWebSocket {
     /**
      * concurrent包的线程安全Set，用来存放每个客户端对应的MyWebSocket对象
      */
-    public static CopyOnWriteArraySet<TotalConsumeWebSocket> webSocketSet = new CopyOnWriteArraySet<TotalConsumeWebSocket>();
+    public static CopyOnWriteArraySet<TotalConsumeWebSocket> webSocketSet = new CopyOnWriteArraySet<>();
 
     /**
      * 与某个客户端的连接会话，需要通过它来与客户端进行数据收发
@@ -37,24 +34,24 @@ public class TotalConsumeWebSocket {
     */
     private String name;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(TotalConsumeWebSocket.class);
 
     @OnOpen
-    public void onOpen(@PathParam("name") String s ,Session session)  {
-        //this.socketName = s;
-        this.session = session;
-        this.session.getAsyncRemote().sendText(WebSocketConstants.totalConsumeWebSocketCache);
-        setName(s);
+    public void onOpen(Session session)  {
+        setName("1");
+        setSession(session);
+        //首次建立连接异步调用ws接口  服务不重启情况下,可保证页面刷新后有数据
+        if (WebSocketConstants.totalConsumeWebSocketCache != null) {
+            this.session.getAsyncRemote().sendText("sync");
+        }
         webSocketSet.add(this);
-
-        LOGGER.info(s+"加入连接");
-        LOGGER.info("当前在线人数为:" + webSocketSet.size());
+        log.info(name+"加入连接");
+        log.info("当前在线人数为:" + webSocketSet.size());
     }
 
     @OnClose
     public void onClose() {
         webSocketSet.remove(this);
-        LOGGER.info("Close a websocket. ");
+        log.info("Close a websocket. ");
     }
 
     /**
@@ -65,16 +62,16 @@ public class TotalConsumeWebSocket {
     @OnMessage
     public void onMessage(String message, Session session) {
 
-        LOGGER.info("当前收到了消息：" + message);
+        log.info("当前收到了消息：" + message);
     }
 
     @OnError
     public void onError(Session session, Throwable error) {
-        LOGGER.error("Error while websocket. ", error);
+        log.error("Error while websocket. ", error);
     }
 
     /**
-     * 实现服务器主动推送
+     * 推送ws方法  用于传入kafka消息
      */
     public void sendMessage(String message) throws Exception {
         if (this.session.isOpen()) {
